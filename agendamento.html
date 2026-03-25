@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Agendamento</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+<header>
+  <div class="header-content">
+    <h1>💈 Barbearia</h1>
+
+    <nav>
+      <span id="usuario"></span>
+      <button onclick="logout()">Sair</button>
+    </nav>
+  </div>
+</header>
+</header>
+
+<main class="container">
+
+  <section class="card">
+    <h2>Agendar</h2>
+
+    <form id="form">
+      <input id="nome" placeholder="Nome" required>
+      <label>Serviço</label>
+    <select id="servico" required>
+        <option value="">Escolha o serviço</option>
+        <option value="Corte - R$30">Corte - R$30</option>
+        <option value="Barba - R$20">Barba - R$20</option>
+        <option value="Sombrancelha - R$15">Sombrancelha - R$15</option>
+        <option value="Luzes - R$60">Luzes - R$60</option>
+        <option value="Corte + Barba - R$50">Corte + Barba - R$50</option>
+        <option value="Corte + Luzes - R$90">Corte + Luzes - R$90</option>
+        <option value="Corte + Sombrancelha - R$45">Corte + Sombrancelha - R$45</option>
+        <option value="Corte + Barba + Luzes - R$110">Corte + Barba + Luzes - R$110</option>
+        <option value="Corte + Barba + Sombrancelha - R$65">Corte + Barba + Sombrancelha - R$65</option>
+        <option value="Corte + Luzes + Sombrancelha - R$95">Corte + Luzes + Sombrancelha - R$95</option>
+        <option value="Corte + Barba + Luzes + Sombrancelha - R$125">Corte + Barba + Luzes + Sombrancelha - R$125</option>
+
+    </select>
+      <input type="date" id="data" required>
+      <input type="time" id="hora" required>
+      <button>Agendar</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Agendamentos</h2>
+    <ul id="lista"></ul>
+  </section>
+
+</main>
+
+<script>
+
+if (localStorage.getItem("logado") !== "true") {
+  window.location.href = "index.html";
+}
+
+document.getElementById("usuario").textContent =
+  "👤 " + localStorage.getItem("usuario");
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+
+const form = document.getElementById("form");
+const lista = document.getElementById("lista");
+
+let dados = JSON.parse(localStorage.getItem("dados")) || [];
+
+function render() {
+  lista.innerHTML = "";
+
+  dados.forEach((item, i) => {
+    const li = document.createElement("li");
+    li.textContent = `${item.nome} - ${item.servico}`;
+
+    const btn = document.createElement("button");
+    btn.textContent = "X";
+    btn.onclick = () => {
+      dados.splice(i, 1);
+      salvar();
+    };
+
+    li.appendChild(btn);
+    lista.appendChild(li);
+  });
+}
+
+function salvar() {
+  localStorage.setItem("dados", JSON.stringify(dados));
+  render();
+}
+
+form.addEventListener("submit", e => {
+  e.preventDefault();
+
+  dados.push({
+    nome: nome.value,
+    servico: servico.value
+  });
+
+  salvar();
+  form.reset();
+});
+
+render();
+
+</script>
+
+</body>
+</html>
